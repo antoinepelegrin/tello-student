@@ -22,33 +22,131 @@ yolo = TFNet(options)
 # Objet Tello() 
 my_drone = tello.Tello()
 
+#### CONSTANTES
+
+xcenter = 480
+ycenter = 360 
+
+distance_min = 40 
+
 ######## FONCTIONS 
 
-def beginMission():
-    return 0
+# Appelee au debut de la mission
+# Fait decoller le drone, l'amene a 150cm du sol, demarre le stream du tello et active la camera ventrale. 
 
+def beginMission():
+    my_drone.send_command("mon")
+    my_drone.streamon()
+    my_drone.takeoff()
+    while my_drone.get_tof() < 150:
+        my_drone.up(20)
+
+# Fait suivre au drone le parcours de mission pads specifie dans les diapositives. 
+        
 def patrol():
     return 0
 
-def detection():
-    return 0
+# Retourne la difference en x et y entre le centre de l'image et le centre de la meilleure boite englobante. 
 
+def distances(predictions, label):
+    
+    max_confidence = 0
+    index = 0
+    
+    iterations = len(predictions)
+    
+    for i in range(iterations):
+        if predictions[i]["label"] == label and prediction[i]["confidence"] > max_confidence:
+            index = i
+            max_confidence = prediction["confidence"]
+            
+        target = predictions[index]
+        
+        x_centerbox = target["topleft"]["x"] + (target["bottomright"]["x"] - target["topleft"]["x"])/2
+        y_centerbox = target["topleft"]["y"] + (target["bottomright"]["y"] - target["topleft"]["y"])/2
+        
+        x_diff = x_centerbox - xcenter
+        y_diff = y_centerbox - ycenter 
+        
+        return [x_diff, y_diff]
+    
+# Retourne la distance euclidienne entre le centre de l'image et le centre de la boite englobante.
+    
+def distance(distances):
+    return math.sqrt(distances[0]**2 + distances[1]**2)
+
+# Deplace le drone de haut en bas et le fait tourner de maniere a l'enligner sur la detection.  
+
+def align(differences):
+    x_diff = differences[0]
+    y_diff = differences[1]
+    
+    if x_diff < 0:
+        drone.ccw(math.floor(abs(x_diff) *0.07))
+    else:
+        drone.cw(math.floor(abs(x_diff) *0.07))
+        
+    if abs(y_diff) > 30:
+        if y_diff < 0:
+            drone.up(20)
+        else:
+            drone.down(20)
+
+# Fait faire une pirouette au drone et imprime un message a l'ecran 
+        
 def action():
-    return 0
+    my_drone.flip("left")
+    print("Cible identifiee!")
 
+# Ramene le drone a la base, mettre fin au stream, fermer la fenetre OpenCV. 
+    
 def endMission():
-    return 0
+    my_drone.streamoff()
+    cv2.DestroyAllWindows()
 
 ######## MISSION 
 
-my_drone.streamon() 
+label = "person"
+
+# Debut de la mission
 
 beginMission()
 
+# Objet capture 
+
+cap = VideoCapture(my_drone.video_source)
+
+# Boucle principale 
+
 while my_drone.stream_state:
-    return 0
+    frame = cap.read()
+    
+    predictions = yolo.return_predict(frame)
+    bounding_boxes(predictions, label)
+    
+    cv2.imshow("Tello Stream", frame)
+    
+    # Execute si le bon label est detecte. Sinon, appeler patrol() pour le mouvement par defaut. 
+    
+    if detected(predictions, label):
+        
+        distances = distances(predictions, label)
+        
+        # Si le drone est bien aligne a l'objet, executer action() et sortir de la boucle. Sinon, appeler align() pour l'enligner. 
+        
+        if distance(distances) < distance_min:
+            action()
+            break 
+        else:
+            align(distances)
+        
+    else: 
+        patrol()
+    
+    if cv2.waitKey(1) & 0xFF == ord("q"):
+        break 
 
+# Fin de la mission 
+        
 endMission()
-
-my_drone.streamoff()
 

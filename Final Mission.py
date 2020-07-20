@@ -29,6 +29,68 @@ ycenter = 360
 
 distance_min = 40 
 
+######## COMMANDES 
+
+commands = []
+
+commands.append("go 40 0 100 30 m1")
+
+commands.append("cw 45")
+commands.append("cw 45")
+
+commands.append("ccw 45")
+commands.append("ccw 45")
+commands.append("ccw 45")
+commands.append("ccw 45")
+
+commands.append("cw 45")
+commands.append("cw 45")
+
+commands.append("go 0 0 100 30 m2")
+
+commands.append("cw 45")
+commands.append("cw 45")
+commands.append("cw 45")
+
+commands.append("go 40 -40 100 30 m2")
+
+commands.append("cw 45")
+commands.append("cw 45")
+
+commands.append("ccw 45")
+commands.append("ccw 45")
+commands.append("ccw 45")
+commands.append("ccw 45")
+
+commands.append("cw 45")
+commands.append("cw 45")
+
+commands.append("go 0 0 100 30 m3")
+
+commands.append("cw 45")
+commands.append("cw 45")
+
+commands.append("go 40 40 100 30 m3")
+
+commands.append("cw 45")
+commands.append("cw 45")
+
+commands.append("ccw 45")
+commands.append("ccw 45")
+commands.append("ccw 45")
+commands.append("ccw 45")
+
+commands.append("cw 45")
+commands.append("cw 45")
+
+commands.append("go 0 0 100 30 m1")
+
+commands.append("cw 45")
+commands.append("cw 45")
+commands.append("cw 45")
+
+nb_steps = len(commands)
+
 ######## FONCTIONS 
 
 # Appelee au debut de la mission
@@ -43,8 +105,8 @@ def beginMission():
 
 # Fait suivre au drone le parcours de mission pads specifie dans les diapositives. 
         
-def patrol():
-    return 0
+def patrol(command):
+    my_drone.send_command(command)
 
 # Retourne la difference en x et y entre le centre de l'image et le centre de la meilleure boite englobante. 
 
@@ -117,6 +179,7 @@ beginMission()
 cap = VideoCapture(my_drone.video_source)
 
 # Boucle principale 
+i = 0 
 
 while my_drone.stream_state:
     frame = cap.read()
@@ -141,7 +204,8 @@ while my_drone.stream_state:
             align(distances)
         
     else: 
-        patrol()
+        patrol(command[i])
+        i = (i+1)%nb_steps 
     
     if cv2.waitKey(1) & 0xFF == ord("q"):
         break 

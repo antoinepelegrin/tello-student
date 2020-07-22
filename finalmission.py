@@ -169,6 +169,7 @@ def endMission():
     my_drone.land()
     
     my_drone.streamoff()
+    cap.release() 
     cv2.destroyAllWindows()
     
 

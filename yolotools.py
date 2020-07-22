@@ -25,6 +25,9 @@ class VideoCapture:
 				except Queue.Empty:
 					pass
 			self.q.put(frame)
+            
+	def release(self):
+		self.cap.release()
 	
 	def read(self):
 		return self.q.get() 

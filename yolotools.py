@@ -108,5 +108,43 @@ def match(detections, targets):
 
 	return targeting, centers, model_output 
 
+# Retourne la difference en x et y entre le centre de l'image et le centre de la meilleure boite englobante. 
 
+def distances(predictions, label):
     
+    max_confidence = 0
+    index = 0
+    
+    iterations = len(predictions)
+    
+    for i in range(iterations):
+        if predictions[i]["label"] == label and predictions[i]["confidence"] > max_confidence:
+            index = i
+            max_confidence = predictions[i]["confidence"]
+            
+        target = predictions[index]
+        
+        x_centerbox = target["topleft"]["x"] + (target["bottomright"]["x"] - target["topleft"]["x"])/2
+        y_centerbox = target["topleft"]["y"] + (target["bottomright"]["y"] - target["topleft"]["y"])/2
+        
+        x_diff = x_centerbox - xcenter
+        y_diff = y_centerbox - ycenter 
+        
+        return [x_diff, y_diff]
+
+# Deplace le drone de haut en bas et le fait tourner de maniere a l'enligner sur la detection.  
+
+def align(differences):
+    x_diff = differences[0]
+    y_diff = differences[1]
+    
+    if x_diff < 0:
+        my_drone.ccw(math.floor(abs(x_diff) *0.07))
+    else:
+        my_drone.cw(math.floor(abs(x_diff) *0.07))
+        
+    if abs(y_diff) > 30:
+        if y_diff < 0:
+            my_drone.up(20)
+        else:
+            my_drone.down(20)

@@ -34,63 +34,10 @@ distance_min = 40
 
 ######## COMMANDES 
 
+from shapes import polygon
+
 commands = []
-
-commands.append("go 40 0 100 30 m1")
-
-commands.append("cw 45")
-commands.append("cw 45")
-
-commands.append("ccw 45")
-commands.append("ccw 45")
-commands.append("ccw 45")
-commands.append("ccw 45")
-
-commands.append("cw 45")
-commands.append("cw 45")
-
-commands.append("go 0 0 100 30 m2")
-
-commands.append("cw 45")
-commands.append("cw 45")
-commands.append("cw 45")
-
-commands.append("go 40 -40 100 30 m2")
-
-commands.append("cw 45")
-commands.append("cw 45")
-
-commands.append("ccw 45")
-commands.append("ccw 45")
-commands.append("ccw 45")
-commands.append("ccw 45")
-
-commands.append("cw 45")
-commands.append("cw 45")
-
-commands.append("go 0 0 100 30 m3")
-
-commands.append("cw 45")
-commands.append("cw 45")
-
-commands.append("go 40 40 100 30 m3")
-
-commands.append("cw 45")
-commands.append("cw 45")
-
-commands.append("ccw 45")
-commands.append("ccw 45")
-commands.append("ccw 45")
-commands.append("ccw 45")
-
-commands.append("cw 45")
-commands.append("cw 45")
-
-commands.append("go 0 0 100 30 m1")
-
-commands.append("cw 45")
-commands.append("cw 45")
-commands.append("cw 45")
+polygon(commands, 4, 117)
 
 nb_steps = len(commands)
 

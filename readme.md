@@ -11,3 +11,7 @@ Il est divise en:
 Il prend la forme de Notebooks Jupyter. Chaque chapitre est constitue d'un fichier d'exemple et d'un fichier d'exercices pour les etudiants. Les exercices sont accompagnes d'un corrige. 
 
 L'interface entre Tello et Python est fortement basee sur la librairie easytello (github.com/Virodroid/easyTello), que j'ai legerement modifiee pour faciliter l'interface avec YOLO. 
+
+Diapos:
+
+https://drive.google.com/drive/folders/1mYE6zS24w_E2qvxnAc4ssyqzptj_SqEY?usp=sharing
